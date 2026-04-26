@@ -46,7 +46,13 @@ def main() -> None:
     outline_output = outline_agent.run(legend_output)
 
     print("[3/4] 生成小说稿件...")
-    draft_output = write_agent.run({**legend_output, **outline_output})
+    existing_draft = ""
+    draft_file = root / "output" / "draft_text.txt"
+    if draft_file.exists():
+        existing_draft = draft_file.read_text(encoding="utf-8")
+        print("检测到已有 draft_text.txt，已把现有内容传给写作 agent 继续写作。")
+
+    draft_output = write_agent.run({**legend_output, **outline_output, "existing_draft": existing_draft})
 
     print("[4/4] 审核小说产出...")
     review_output = review_agent.run({**legend_output, **outline_output, **draft_output})
