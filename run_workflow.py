@@ -39,11 +39,23 @@ def main() -> None:
     write_agent = WritingAgent("write_agent", {**llm_config, **config.get("write", {"chapter_count": 3})})
     review_agent = ReviewAgent("review_agent", {**llm_config, **config.get("review", {})})
 
+    outline_file = root / "input" / "outline.txt"
+    outline_text = ""
+    if outline_file.exists():
+        outline_text = outline_file.read_text(encoding="utf-8")
+        print("检测到自带大纲 input/outline.txt，工作流将直接使用该大纲，并基于大纲搜索神话内容。")
+
     print("[1/4] 收集传说素材并生成写作任务...")
-    legend_output = search_agent.run({"regions": config.get("search", {}).get("regions", [])})
+    legend_output = search_agent.run({
+        "regions": config.get("search", {}).get("regions", []),
+        "outline": outline_text,
+    })
 
     print("[2/4] 生成小说大纲...")
-    outline_output = outline_agent.run(legend_output)
+    if outline_text:
+        outline_output = {"novel_outline": outline_text}
+    else:
+        outline_output = outline_agent.run(legend_output)
 
     print("[3/4] 生成小说稿件...")
     existing_draft = ""

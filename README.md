@@ -30,10 +30,19 @@
    - `llm.model`
    - `outline.tone`
    - `outline.length`
-4. 初次生成：
+4. 如果你希望使用自带大纲，请创建 `input/outline.txt` 并写入你的大纲。
+5. 初次生成：
    ```powershell
    python run_workflow.py
    ```
+
+## 自带大纲搜索
+
+如果 `input/outline.txt` 存在，工作流会直接使用该大纲作为小说大纲，并基于大纲中的角色、地点、神器、神祇等元素自动生成搜索关键词，检索相关神话/传说素材。
+
+- 可以直接把你准备好的章节大纲、人物设定、世界观描述写入 `input/outline.txt`
+- 系统会根据大纲构建搜索 query，如“XXX 传说 神话”
+- 搜索结果会用于生成写作任务，并结合大纲推进小说写作
 
 ## 续写已有内容
 
